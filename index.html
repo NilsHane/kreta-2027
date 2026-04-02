@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kreta 2027 🇬🇷</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue-deep: #1a3a5c;
+  --blue-aegean: #2e86ab;
+  --blue-light: #a3d5e0;
+  --blue-sky: #e8f4f8;
+  --sand: #f5e6d3;
+  --sand-dark: #d4a574;
+  --terracotta: #c75b39;
+  --white: #fffbf5;
+  --white-pure: #ffffff;
+  --text: #2c2c2c;
+  --text-light: #6b6b6b;
+  --shadow: 0 4px 20px rgba(26,58,92,0.1);
+  --shadow-lg: 0 8px 40px rgba(26,58,92,0.15);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--text); line-height:1.6; overflow-x:hidden; }
+
+.hero {
+  position:relative; height:55vh; min-height:380px;
+  background:linear-gradient(135deg,var(--blue-deep) 0%,var(--blue-aegean) 50%,var(--blue-light) 100%);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; overflow:hidden;
+}
+.hero::before { content:''; position:absolute; bottom:-2px; left:0; right:0; height:80px; background:var(--white); clip-path:ellipse(55% 100% at 50% 100%); }
+.hero-pattern { position:absolute; inset:0; opacity:0.06; background-image:radial-gradient(circle at 20% 30%,white 1px,transparent 1px),radial-gradient(circle at 80% 70%,white 1px,transparent 1px),radial-gradient(circle at 50% 50%,white 1.5px,transparent 1.5px); background-size:60px 60px,80px 80px,100px 100px; }
+.hero-content { position:relative; z-index:1; animation:fadeUp 1s ease-out; }
+.hero-flag { font-size:3rem; margin-bottom:0.5rem; }
+.hero h1 { font-family:'Playfair Display',serif; font-size:clamp(2.5rem,6vw,4.5rem); color:var(--white-pure); font-weight:700; letter-spacing:-0.02em; text-shadow:0 2px 20px rgba(0,0,0,0.2); }
+.hero h1 em { font-style:italic; color:var(--sand); }
+.hero-sub { font-size:1.15rem; color:rgba(255,255,255,0.85); margin-top:0.75rem; font-weight:300; letter-spacing:0.04em; }
+
+.tab-nav { position:sticky; top:0; z-index:100; background:var(--white-pure); border-bottom:1px solid rgba(0,0,0,0.06); display:flex; justify-content:center; box-shadow:0 2px 12px rgba(0,0,0,0.04); }
+.tab-btn { background:none; border:none; padding:1rem 1.4rem; font-family:'DM Sans',sans-serif; font-size:0.88rem; font-weight:500; color:var(--text-light); cursor:pointer; position:relative; transition:color 0.3s; white-space:nowrap; }
+.tab-btn:hover { color:var(--blue-aegean); }
+.tab-btn.active { color:var(--terracotta); font-weight:600; }
+.tab-btn.active::after { content:''; position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:60%; height:3px; background:var(--terracotta); border-radius:3px 3px 0 0; }
+.tab-icon { margin-right:0.35rem; }
+
+.section { display:none; max-width:960px; margin:0 auto; padding:3rem 1.5rem 4rem; animation:fadeUp 0.5s ease-out; }
+.section.active { display:block; }
+.section-title { font-family:'Playfair Display',serif; font-size:2rem; color:var(--blue-deep); margin-bottom:0.5rem; }
+.section-sub { color:var(--text-light); margin-bottom:2.5rem; font-size:0.95rem; }
+
+.overview-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; margin-top:1.5rem; }
+.info-card { background:var(--white-pure); border:1px solid rgba(0,0,0,0.06); border-radius:var(--radius); padding:1.75rem; box-shadow:var(--shadow); transition:transform 0.3s,box-shadow 0.3s; }
+.info-card:hover { transform:translateY(-3px); box-shadow:var(--shadow-lg); }
+.card-icon { font-size:2rem; margin-bottom:0.75rem; }
+.card-label { font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-light); margin-bottom:0.4rem; }
+.card-value { font-family:'Playfair Display',serif; font-size:1.35rem; color:var(--blue-deep); font-weight:700; }
+.card-detail { margin-top:0.5rem; font-size:0.9rem; color:var(--text-light); line-height:1.5; }
+.weather-bar { display:flex; gap:0.75rem; margin-top:1rem; flex-wrap:wrap; }
+.weather-item { background:var(--blue-sky); border-radius:var(--radius-sm); padding:0.5rem 0.9rem; text-align:center; flex:1; min-width:80px; }
+.weather-item .temp { font-weight:600; color:var(--blue-deep); font-size:1.1rem; }
+.weather-item .label { font-size:0.7rem; color:var(--text-light); }
+
+.hotel-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:2rem; }
+.hotel-card { background:var(--white-pure); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); border:2px solid transparent; transition:all 0.3s; position:relative; }
+.hotel-card:hover { box-shadow:var(--shadow-lg); transform:translateY(-4px); }
+.hotel-card.voted { border-color:var(--terracotta); }
+.hotel-img { width:100%; height:220px; object-fit:cover; display:block; background:linear-gradient(135deg,var(--blue-aegean),var(--blue-deep)); }
+.hotel-body { padding:1.5rem; }
+.hotel-badge { display:inline-block; background:var(--sand); color:var(--terracotta); font-size:0.7rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; padding:0.3rem 0.7rem; border-radius:20px; margin-bottom:0.75rem; }
+.hotel-name { font-family:'Playfair Display',serif; font-size:1.4rem; color:var(--blue-deep); margin-bottom:0.25rem; }
+.hotel-location { color:var(--text-light); font-size:0.85rem; margin-bottom:1rem; }
+.hotel-features { list-style:none; margin-bottom:1.25rem; }
+.hotel-features li { padding:0.3rem 0; font-size:0.88rem; color:var(--text); display:flex; align-items:center; gap:0.5rem; }
+.hotel-features li::before { content:'✓'; color:var(--blue-aegean); font-weight:700; }
+.hotel-price { font-size:0.85rem; color:var(--text-light); padding-top:1rem; border-top:1px solid rgba(0,0,0,0.06); }
+.hotel-price strong { font-size:1.2rem; color:var(--terracotta); }
+.vote-btn { position:absolute; top:1rem; right:1rem; background:rgba(255,255,255,0.92); border:none; width:48px; height:48px; border-radius:50%; font-size:1.4rem; cursor:pointer; box-shadow:0 2px 10px rgba(0,0,0,0.15); transition:all 0.3s; display:flex; align-items:center; justify-content:center; }
+.vote-btn:hover { transform:scale(1.15); }
+.vote-btn.voted { background:var(--terracotta); }
+.vote-label { text-align:center; margin-top:2rem; color:var(--text-light); font-size:0.85rem; font-style:italic; }
+
+#map-container { width:100%; height:450px; border-radius:var(--radius); box-shadow:var(--shadow); margin-bottom:2rem; overflow:hidden; position:relative; background:var(--blue-sky); }
+#map { width:100%; height:100%; }
+.map-fallback { display:flex; align-items:center; justify-content:center; height:100%; flex-direction:column; gap:1rem; color:var(--text-light); padding:2rem; text-align:center; }
+.map-fallback a { color:var(--blue-aegean); }
+
+.filter-bar { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1.5rem; }
+.filter-pill { background:var(--white-pure); border:1.5px solid rgba(0,0,0,0.1); border-radius:20px; padding:0.4rem 1rem; font-size:0.82rem; font-weight:500; cursor:pointer; transition:all 0.2s; font-family:'DM Sans',sans-serif; color:var(--text); }
+.filter-pill:hover { border-color:var(--blue-aegean); color:var(--blue-aegean); }
+.filter-pill.active { background:var(--blue-aegean); color:white; border-color:var(--blue-aegean); }
+
+.poi-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1rem; }
+.poi-item { background:var(--white-pure); border-radius:var(--radius-sm); padding:1.25rem; padding-right:3rem; border-left:4px solid var(--blue-aegean); box-shadow:var(--shadow); transition:all 0.3s; position:relative; cursor:pointer; }
+.poi-item:hover { border-left-color:var(--terracotta); transform:translateX(4px); }
+.poi-item h4 { font-family:'Playfair Display',serif; color:var(--blue-deep); margin-bottom:0.3rem; font-size:1.05rem; }
+.poi-item p { font-size:0.85rem; color:var(--text-light); }
+.poi-tag { display:inline-block; font-size:0.7rem; font-weight:600; padding:0.2rem 0.5rem; border-radius:12px; margin-top:0.5rem; margin-right:0.3rem; }
+.tag-strand { background:#e0f4f4; color:#1a8a7a; }
+.tag-kultur { background:#f0e6f6; color:#7a3a9a; }
+.tag-natur { background:#e6f4e0; color:#3a7a2a; }
+.tag-wanderung { background:#fce8dc; color:#b55a2a; }
+.tag-boot { background:#dce8fc; color:#2a4a9a; }
+.poi-save { position:absolute; top:1rem; right:0.75rem; background:none; border:none; font-size:1.2rem; cursor:pointer; opacity:0.35; transition:all 0.2s; }
+.poi-save:hover { opacity:1; transform:scale(1.2); }
+.poi-save.saved { opacity:1; }
+
+.saved-bar { background:var(--sand); border-radius:var(--radius); padding:1rem 1.5rem; margin-bottom:1.5rem; display:flex; align-items:center; gap:0.75rem; font-size:0.9rem; }
+.saved-bar strong { color:var(--terracotta); }
+
+.resto-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; }
+.resto-card { background:var(--white-pure); border-radius:var(--radius); padding:1.5rem; padding-right:3rem; box-shadow:var(--shadow); transition:all 0.3s; border:2px solid transparent; position:relative; }
+.resto-card:hover { box-shadow:var(--shadow-lg); transform:translateY(-3px); }
+.resto-card.saved { border-color:var(--terracotta); }
+.resto-name { font-family:'Playfair Display',serif; font-size:1.2rem; color:var(--blue-deep); margin-bottom:0.2rem; }
+.resto-type { font-size:0.75rem; color:var(--terracotta); font-weight:600; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.5rem; }
+.resto-desc { font-size:0.88rem; color:var(--text-light); margin-bottom:0.75rem; line-height:1.5; }
+.resto-meta { display:flex; gap:0.9rem; flex-wrap:wrap; font-size:0.8rem; color:var(--text-light); }
+.resto-meta span { display:flex; align-items:center; gap:0.3rem; }
+.resto-meta a { color:var(--blue-aegean); text-decoration:none; }
+.resto-meta a:hover { text-decoration:underline; }
+.resto-save { position:absolute; top:1rem; right:1rem; background:none; border:none; font-size:1.3rem; cursor:pointer; opacity:0.35; transition:all 0.2s; }
+.resto-save:hover { opacity:1; transform:scale(1.15); }
+.resto-save.saved { opacity:1; }
+.resto-rating { display:inline-flex; align-items:center; gap:0.3rem; background:var(--sand); padding:0.15rem 0.55rem; border-radius:12px; font-weight:600; font-size:0.8rem; color:var(--blue-deep); margin-bottom:0.6rem; }
+
+.cost-table { width:100%; border-collapse:separate; border-spacing:0; border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); margin-bottom:1.5rem; }
+.cost-table thead th { background:var(--blue-deep); color:var(--white-pure); padding:1rem 1.25rem; text-align:left; font-weight:500; font-size:0.85rem; text-transform:uppercase; letter-spacing:0.06em; }
+.cost-table tbody td { padding:0.9rem 1.25rem; border-bottom:1px solid rgba(0,0,0,0.05); font-size:0.92rem; }
+.cost-table tbody tr:nth-child(even) { background:var(--blue-sky); }
+.cost-table tbody tr:hover { background:var(--sand); }
+.cost-table tfoot td { padding:1rem 1.25rem; background:var(--sand); font-weight:600; font-size:1.05rem; color:var(--blue-deep); }
+.cost-note { color:var(--text-light); font-size:0.8rem; font-style:italic; margin-top:0.75rem; }
+
+.footer { text-align:center; padding:2.5rem 1.5rem; color:var(--text-light); font-size:0.8rem; border-top:1px solid rgba(0,0,0,0.06); margin-top:2rem; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+@media(max-width:640px){
+  .hero{height:45vh;min-height:300px}
+  .tab-btn{padding:0.8rem 0.6rem;font-size:0.78rem}
+  .tab-icon{display:none}
+  .section{padding:2rem 1rem 3rem}
+  .hotel-cards{grid-template-columns:1fr}
+  #map-container{height:300px}
+  .cost-table{font-size:0.85rem}
+  .cost-table thead th,.cost-table tbody td,.cost-table tfoot td{padding:0.7rem 0.75rem}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-pattern"></div>
+  <div class="hero-content">
+    <div class="hero-flag">🇬🇷</div>
+    <h1>Kreta <em>2027</em></h1>
+    <p class="hero-sub">Pfingstferien · Chania · 18.–31. Mai</p>
+  </div>
+</header>
+
+<nav class="tab-nav">
+  <button class="tab-btn active" data-tab="overview"><span class="tab-icon">☀️</span>Überblick</button>
+  <button class="tab-btn" data-tab="hotels"><span class="tab-icon">🏨</span>Hotels</button>
+  <button class="tab-btn" data-tab="trips"><span class="tab-icon">🗺️</span>Ausflüge</button>
+  <button class="tab-btn" data-tab="restaurants"><span class="tab-icon">🍽️</span>Restaurants</button>
+  <button class="tab-btn" data-tab="costs"><span class="tab-icon">💰</span>Kosten</button>
+</nav>
+
+<!-- ÜBERBLICK -->
+<section class="section active" id="overview">
+  <h2 class="section-title">Auf einen Blick</h2>
+  <p class="section-sub">Alles Wichtige zu unserer Kreta-Reise zusammengefasst.</p>
+  <div class="overview-grid">
+    <div class="info-card"><div class="card-icon">📅</div><div class="card-label">Reisezeitraum</div><div class="card-value">18.–31. Mai 2027</div><div class="card-detail">Pfingstferien Bayern + 3 Tage. Insgesamt <strong>13 Nächte</strong>.</div></div>
+    <div class="info-card"><div class="card-icon">✈️</div><div class="card-label">Anreise</div><div class="card-value">Flug MUC → CHQ</div><div class="card-detail">Direktflug München → Chania, ca. 3h. Im Mai mehrfach wöchentlich.</div></div>
+    <div class="info-card"><div class="card-icon">📍</div><div class="card-label">Ziel</div><div class="card-value">Chania, Westkreta</div><div class="card-detail">Venezianischer Hafen, Traumstrände, Kultur — alles als Tagesausflug erreichbar.</div></div>
+    <div class="info-card"><div class="card-icon">🚗</div><div class="card-label">Vor Ort</div><div class="card-value">Mietwagen empfohlen</div><div class="card-detail">Für Strand- und Kulturausflüge quasi unverzichtbar. ÖPNV reicht nicht.</div></div>
+  </div>
+  <h3 style="font-family:'Playfair Display',serif;color:var(--blue-deep);margin:2.5rem 0 1rem;">Wetter im Mai auf Kreta</h3>
+  <div class="info-card">
+    <div class="card-detail" style="margin-bottom:1rem;">Warm genug für kurze Sachen, nicht brüllend heiß. Ideal zum Sightseeing und Baden.</div>
+    <div class="weather-bar">
+      <div class="weather-item"><div class="temp">🌡️ 24–28°C</div><div class="label">Tagestemperatur</div></div>
+      <div class="weather-item"><div class="temp">💧 20–21°C</div><div class="label">Wassertemperatur</div></div>
+      <div class="weather-item"><div class="temp">☀️ 11h</div><div class="label">Sonnenstunden</div></div>
+      <div class="weather-item"><div class="temp">🌧️ 2–3</div><div class="label">Regentage/Monat</div></div>
+    </div>
+  </div>
+  <div class="info-card" style="margin-top:1.5rem;border-left:4px solid var(--terracotta);">
+    <div class="card-icon">💡</div><div class="card-label">Warum Pfingsten?</div>
+    <div class="card-detail"><strong>Preise:</strong> Deutlich günstiger als Juli/August.<br><strong>Wetter:</strong> Angenehm warm, nicht überhitzt (Sommer oft 35°C+).<br><strong>Tourismus:</strong> Weniger Menschenmassen an Stränden & Sights.<br><strong>Natur:</strong> Kreta blüht, Landschaft noch saftig grün.</div>
+  </div>
+</section>
+
+<!-- HOTELS -->
+<section class="section" id="hotels">
+  <h2 class="section-title">Hotelvorschläge</h2>
+  <p class="section-sub">Zwei Optionen — klick das Herz bei deinem Favoriten!</p>
+  <div class="hotel-cards">
+    <div class="hotel-card" id="hotel1">
+      <img class="hotel-img" src="https://images.unsplash.com/photo-1602343168069-e48e0e417edc?w=640&h=440&fit=crop&q=80" alt="Santa Marina Plaza" onerror="this.style.background='linear-gradient(135deg,#2e86ab,#1a3a5c)'">
+      <button class="vote-btn" onclick="vote('hotel1')" id="vote1">🤍</button>
+      <div class="hotel-body">
+        <span class="hotel-badge">Adults Only · 4★</span>
+        <h3 class="hotel-name">Santa Marina Plaza</h3>
+        <p class="hotel-location">📍 Agia Marina, ~10 km westlich von Chania</p>
+        <ul class="hotel-features"><li>Kleines Hotel, nur 51 Zimmer</li><li>Direkt am feinsandigen Strand</li><li>Halbpension verfügbar (Buffet)</li><li>Pool, Whirlpool, Massagen</li><li>Bars & Restaurants fußläufig</li><li>Chania-Altstadt per Bus/Auto</li></ul>
+        <div class="hotel-price">Geschätzt ab <strong>ca. 80–120 €/Nacht</strong> für 2 Pers. mit HP</div>
+      </div>
+    </div>
+    <div class="hotel-card" id="hotel2">
+      <img class="hotel-img" src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=640&h=440&fit=crop&q=80" alt="Chania Flair Boutique" onerror="this.style.background='linear-gradient(135deg,#c75b39,#1a3a5c)'">
+      <button class="vote-btn" onclick="vote('hotel2')" id="vote2">🤍</button>
+      <div class="hotel-body">
+        <span class="hotel-badge">Adults Only · 5★ Boutique</span>
+        <h3 class="hotel-name">Chania Flair Boutique Hotel</h3>
+        <p class="hotel-location">📍 Chania-Stadt, zwischen Altstadt & Strand</p>
+        <ul class="hotel-features"><li>Hilton Tapestry Collection</li><li>Dachterrasse mit Pool & Meerblick</li><li>Halbpension wählbar (à la carte)</li><li>Strände & Altstadt zu Fuß</li><li>Spa, Fitness mit Meerblick</li><li>Valet Parking & WLAN gratis</li></ul>
+        <div class="hotel-price">Geschätzt ab <strong>ca. 250–350 €/Nacht</strong> für 2 Pers. mit HP</div>
+      </div>
+    </div>
+  </div>
+  <p class="vote-label" id="voteStatus">Tippe auf das 🤍 bei deinem Favoriten!</p>
+</section>
+
+<!-- AUSFLÜGE -->
+<section class="section" id="trips">
+  <h2 class="section-title">Ausflugsziele ab Chania</h2>
+  <p class="section-sub">Filtere nach Kategorie und merke dir deine Favoriten mit ⭐</p>
+  <div class="filter-bar" id="filterBar"></div>
+  <div class="saved-bar" id="poiSavedBar" style="display:none">⭐ <strong id="poiSavedCount">0</strong> Ausflüge gemerkt</div>
+  <div id="map-container"><div id="map"></div></div>
+  <div class="poi-list" id="poiList"></div>
+</section>
+
+<!-- RESTAURANTS -->
+<section class="section" id="restaurants">
+  <h2 class="section-title">Restaurant-Tipps</h2>
+  <p class="section-sub">Die besten Tavernen rund um Chania — merke dir Favoriten mit ❤️</p>
+  <div class="saved-bar" id="restoSavedBar" style="display:none">❤️ <strong id="restoSavedCount">0</strong> Restaurants gemerkt</div>
+  <div class="resto-cards" id="restoList"></div>
+</section>
+
+<!-- KOSTEN -->
+<section class="section" id="costs">
+  <h2 class="section-title">Kostenschätzung</h2>
+  <p class="section-sub">Grobe Kalkulation für 13 Nächte, 2 Personen.</p>
+  <h3 style="font-family:'Playfair Display',serif;color:var(--blue-deep);margin-bottom:1rem;">Option A: Santa Marina Plaza (4★)</h3>
+  <table class="cost-table"><thead><tr><th>Posten</th><th>Details</th><th style="text-align:right">Betrag</th></tr></thead><tbody>
+    <tr><td>✈️ Flüge</td><td>MUC → CHQ, 2 Pers.</td><td style="text-align:right">400–500 €</td></tr>
+    <tr><td>🏨 Hotel HP</td><td>13 × ca. 100 €</td><td style="text-align:right">1.100–1.500 €</td></tr>
+    <tr><td>🚗 Mietwagen</td><td>13 Tage inkl. Versicherung</td><td style="text-align:right">300–450 €</td></tr>
+    <tr><td>⛽ Sprit</td><td>Ausflüge</td><td style="text-align:right">100–150 €</td></tr>
+    <tr><td>🍽️ Extras</td><td>Mittagessen, Getränke, Eintritte</td><td style="text-align:right">400–600 €</td></tr>
+  </tbody><tfoot>
+    <tr><td colspan="2"><strong>Gesamt (2 Pers.)</strong></td><td style="text-align:right"><strong>ca. 2.300–3.200 €</strong></td></tr>
+    <tr><td colspan="2">Pro Person</td><td style="text-align:right">ca. 1.150–1.600 €</td></tr>
+  </tfoot></table>
+  <h3 style="font-family:'Playfair Display',serif;color:var(--blue-deep);margin:2rem 0 1rem;">Option B: Chania Flair Boutique (5★)</h3>
+  <table class="cost-table"><thead><tr><th>Posten</th><th>Details</th><th style="text-align:right">Betrag</th></tr></thead><tbody>
+    <tr><td>✈️ Flüge</td><td>MUC → CHQ, 2 Pers.</td><td style="text-align:right">400–500 €</td></tr>
+    <tr><td>🏨 Hotel HP</td><td>13 × ca. 300 €</td><td style="text-align:right">3.250–4.500 €</td></tr>
+    <tr><td>🚗 Mietwagen</td><td>Nur für Ausflüge</td><td style="text-align:right">200–350 €</td></tr>
+    <tr><td>⛽ Sprit</td><td>Weniger Fahrten</td><td style="text-align:right">60–100 €</td></tr>
+    <tr><td>🍽️ Extras</td><td>Mittagessen, Getränke, Eintritte</td><td style="text-align:right">400–600 €</td></tr>
+  </tbody><tfoot>
+    <tr><td colspan="2"><strong>Gesamt (2 Pers.)</strong></td><td style="text-align:right"><strong>ca. 4.300–6.050 €</strong></td></tr>
+    <tr><td colspan="2">Pro Person</td><td style="text-align:right">ca. 2.150–3.025 €</td></tr>
+  </tfoot></table>
+  <p class="cost-note">* Richtwerte, Stand 2025/26. Frühbucher sparen deutlich. Flüge 6–9 Monate vorher buchen.</p>
+</section>
+
+<footer class="footer">Mit ☀️ geplant · Kreta 2027</footer>
+
+<script>
+/* ══════ DATA ══════ */
+var allPois = [
+  {name:'Balos-Lagune',lat:35.5931,lng:23.5880,icon:'\u{1F3D6}',cat:'strand',desc:'Türkisfarbene Lagune mit karibischem Flair. Per Auto + 20 min Wanderung oder Boot ab Kissamos.',tags:['~1,5h','Strand']},
+  {name:'Elafonissi Beach',lat:35.2725,lng:23.5425,icon:'\u{1F41A}',cat:'strand',desc:'Berühmt für rosafarbenen Sand und kristallklares Wasser. Einer der schönsten Strände Europas.',tags:['~1,5h','Strand']},
+  {name:'Falassarna',lat:35.4949,lng:23.5700,icon:'\u{1F305}',cat:'strand',desc:'Breiter Sandstrand mit spektakulären Sonnenuntergängen. Ruhiger als Balos und Elafonissi.',tags:['~1h','Strand']},
+  {name:'Seitan Limania',lat:35.5640,lng:24.1350,icon:'\u{1F3CA}',cat:'strand',desc:'Versteckte Bucht mit türkisem Wasser zwischen Felsklippen. Kurzer steiler Abstieg, aber Wow-Faktor!',tags:['~30min','Strand']},
+  {name:'Preveli Beach',lat:35.2350,lng:24.4750,icon:'\u{1F334}',cat:'strand',desc:'Palmenstrand an der Südküste mit Fluss-Mündung. Fast tropische Atmosphäre.',tags:['~2h','Strand']},
+  {name:'Stavros Beach',lat:35.5920,lng:24.0580,icon:'\u{1F3AC}',cat:'strand',desc:'Bekannt aus "Alexis Sorbas". Geschützte Bucht am Fuß eines markanten Berges.',tags:['~20min','Strand']},
+  {name:'Marathi Beach',lat:35.5540,lng:24.1280,icon:'\u{2602}',cat:'strand',desc:'Kleiner ruhiger Strand auf der Akrotiri-Halbinsel. Wenig Touristen, gute Tavernen direkt am Wasser.',tags:['~20min','Strand']},
+  {name:'Samaria-Schlucht',lat:35.2517,lng:23.9625,icon:'\u{1F97E}',cat:'wanderung',desc:'16 km durch eine der längsten Schluchten Europas. Ganztagesabenteuer! Rücktransfer per Boot + Bus.',tags:['Ganztag','Wanderung']},
+  {name:'Imbros-Schlucht',lat:35.2660,lng:24.1620,icon:'\u{1F97E}',cat:'wanderung',desc:'Kürzere Alternative zu Samaria (8 km). Weniger anstrengend, trotzdem beeindruckend.',tags:['~1h + Halbtag','Wanderung']},
+  {name:'Rethymno',lat:35.3387,lng:24.4699,icon:'\u{1F3F0}',cat:'kultur',desc:'Charmante Altstadt mit Festung Fortezza, venezianischem Hafen und langen Sandstränden.',tags:['~1h','Kultur & Strand']},
+  {name:'Knossos',lat:35.2984,lng:25.1631,icon:'\u{1F3DB}',cat:'kultur',desc:'Legendärer minoischer Palast bei Heraklion. Mythos des Minotaurus! Mit Archäologischem Museum.',tags:['~2h','Kultur']},
+  {name:'Chania Altstadt',lat:35.5183,lng:24.0178,icon:'\u{1F3DB}',cat:'kultur',desc:'Venezianischer Hafen, Leuchtturm, Markthalle, osmanische Architektur. Abends besonders stimmungsvoll.',tags:['Zu Fuß','Kultur']},
+  {name:'Kloster Agia Triada',lat:35.5590,lng:24.1320,icon:'\u26EA',cat:'kultur',desc:'Beeindruckendes Kloster auf der Akrotiri-Halbinsel. Schöne Architektur, eigene Olivenöl-Produktion.',tags:['~25min','Kultur']},
+  {name:'Archäol. Museum Heraklion',lat:35.3396,lng:25.1375,icon:'\u{1F3FA}',cat:'kultur',desc:'Eines der wichtigsten Museen Europas für minoische Kunst. Perfekt mit Knossos kombinierbar.',tags:['~2h','Kultur']},
+  {name:'Kournas-See',lat:35.3317,lng:24.2822,icon:'\u{1F986}',cat:'natur',desc:'Einziger Süßwassersee Kretas. Tretboot, Schwimmen, Tavernen am Ufer. Idyllisch!',tags:['~40min','Natur']},
+  {name:'Botanischer Garten',lat:35.4320,lng:23.9350,icon:'\u{1F33F}',cat:'natur',desc:'Botanical Park of Crete in den Weißen Bergen. Heimische Pflanzen, Obstgärten, eigenes Restaurant.',tags:['~30min','Natur']},
+  {name:'Gramvousa Bootstour',lat:35.6150,lng:23.5780,icon:'\u{1F6A2}',cat:'boot',desc:'Boot ab Kissamos zur Festungsinsel Gramvousa + Balos-Lagune. Beliebter Ganztagesausflug.',tags:['Ganztag','Bootstour']},
+  {name:'Loutro',lat:35.2010,lng:24.0780,icon:'\u26F5',cat:'boot',desc:'Autofreies Dorf nur per Boot erreichbar. Kristallklares Wasser, absolute Ruhe. Tagestrip.',tags:['Boot + Wandern','Bootstour']},
+];
+
+var allRestos = [
+  {name:'Tamam',type:'Kretisch-Mediterran',loc:'Chania Altstadt',rating:4.6,price:'\u20AC\u20AC',desc:'Gehobene kretische Küche in einem umgebauten türkischen Hamam. Kreative Gerichte mit lokalen Zutaten. Reservierung empfohlen!',maps:'https://maps.google.com/?q=Tamam+restaurant+Chania+Crete'},
+  {name:'Thalassino Ageri',type:'Fisch & Meeresfrüchte',loc:'Chania Hafen',rating:4.5,price:'\u20AC\u20AC\u20AC',desc:'Direkt am Meer, Tische fast im Wasser. Fangfrischer Fisch und Seafood. Romantisches Abendessen garantiert.',maps:'https://maps.google.com/?q=Thalassino+Ageri+Chania'},
+  {name:'Glossitses',type:'Moderne kretische Küche',loc:'Chania Altstadt',rating:4.7,price:'\u20AC\u20AC',desc:'Kleine Karte, alles exzellent. Lokale Zutaten modern interpretiert. Unbedingt die Dakos und Lammgerichte probieren.',maps:'https://maps.google.com/?q=Glossitses+Chania'},
+  {name:'The Well of the Turk',type:'Kretisch-Orientalisch',loc:'Splantzia-Viertel',rating:4.4,price:'\u20AC\u20AC',desc:'Versteckt in einer Gasse, Fusion aus kretischer und orientalischer Küche. Tolle Innenhof-Atmosphäre.',maps:'https://maps.google.com/?q=Well+of+the+Turk+Chania'},
+  {name:'Apostolis',type:'Traditionelle Taverne',loc:'Alter Hafen',rating:4.3,price:'\u20AC',desc:'Bodenständige Taverne am Hafen. Frischer Fisch zu fairen Preisen. Gutes Preis-Leistungs-Verhältnis.',maps:'https://maps.google.com/?q=Apostolis+Taverna+Chania'},
+  {name:'Vigli',type:'Gehobene Küche',loc:'Akrotiri-Halbinsel',rating:4.6,price:'\u20AC\u20AC\u20AC',desc:'Spektakulärer Blick über die Souda-Bucht. Gehobene Küche in romantischer Atmosphäre. Besonderer Abend!',maps:'https://maps.google.com/?q=Vigli+restaurant+Akrotiri+Chania'},
+  {name:'Portes',type:'Kretische Mezedes',loc:'Chania Altstadt',rating:4.5,price:'\u20AC',desc:'Gemütlicher Innenhof. Viele kleine Mezedes-Teller zum Teilen. Kretische Spezialitäten, Raki inklusive!',maps:'https://maps.google.com/?q=Portes+restaurant+Chania'},
+  {name:'Elia & Diosmos',type:'Bio-Kretisch',loc:'Chania Süd',rating:4.5,price:'\u20AC\u20AC',desc:'Bio-Zutaten aus eigenem Anbau. Traditionelle Rezepte. Ruhig abseits der Touristen-Hotspots.',maps:'https://maps.google.com/?q=Elia+Diosmos+Chania'},
+];
+
+/* ══════ TABS ══════ */
+document.querySelectorAll('.tab-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});
+    document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active')});
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+    if(btn.dataset.tab==='trips'&&!window._mapDone) loadMap();
+  });
+});
+
+/* ══════ HOTEL VOTE ══════ */
+function vote(id){
+  var n=id==='hotel1'?'1':'2';
+  var card=document.getElementById(id);
+  var wasVoted=card.classList.contains('voted');
+  ['hotel1','hotel2'].forEach(function(h){document.getElementById(h).classList.remove('voted')});
+  ['vote1','vote2'].forEach(function(v){var el=document.getElementById(v);el.textContent='\u{1F90D}';el.classList.remove('voted')});
+  if(!wasVoted){
+    card.classList.add('voted');
+    var btn=document.getElementById('vote'+n);btn.textContent='\u2764\uFE0F';btn.classList.add('voted');
+    document.getElementById('voteStatus').textContent='\u2764\uFE0F Dein Favorit: '+card.querySelector('.hotel-name').textContent;
+    try{localStorage.setItem('kreta-vote',id)}catch(e){}
+  } else {
+    document.getElementById('voteStatus').textContent='Tippe auf das \u{1F90D} bei deinem Favoriten!';
+    try{localStorage.removeItem('kreta-vote')}catch(e){}
+  }
+}
+try{var sv=localStorage.getItem('kreta-vote');if(sv)vote(sv)}catch(e){}
+
+/* ══════ MAP ══════ */
+function loadMap(){
+  window._mapDone=true;
+  var link=document.createElement('link');
+  link.rel='stylesheet';link.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+  document.head.appendChild(link);
+  var scr=document.createElement('script');
+  scr.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+  scr.onload=function(){setTimeout(buildMap,300)};
+  scr.onerror=function(){
+    document.getElementById('map').innerHTML='<div class="map-fallback"><span style="font-size:2.5rem">\u{1F5FA}</span><p>Karte konnte nicht geladen werden.<br>Auf <strong>GitHub Pages</strong> funktioniert sie einwandfrei!</p></div>';
+  };
+  document.head.appendChild(scr);
+}
+
+function buildMap(){
+  try{
+    var map=L.map('map').setView([35.38,24.05],9);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'\u00A9 OpenStreetMap',maxZoom:17}).addTo(map);
+    allPois.forEach(function(p){
+      var ic=L.divIcon({html:'<div style="font-size:1.4rem;text-shadow:0 1px 3px rgba(0,0,0,0.3)">'+p.icon+'</div>',iconSize:[28,28],iconAnchor:[14,14],className:''});
+      L.marker([p.lat,p.lng],{icon:ic}).addTo(map).bindPopup('<strong>'+p.name+'</strong><br><span style="font-size:0.85em;color:#666">'+p.desc.substring(0,90)+'\u2026</span>');
+    });
+    window._leafletMap=map;
+    setTimeout(function(){map.invalidateSize()},200);
+  }catch(e){
+    document.getElementById('map').innerHTML='<div class="map-fallback"><span style="font-size:2.5rem">\u{1F5FA}</span><p>Kartenfehler. Auf GitHub Pages funktioniert alles.</p></div>';
+  }
+}
+
+function flyTo(lat,lng){
+  if(!document.getElementById('trips').classList.contains('active'))
+    document.querySelector('[data-tab="trips"]').click();
+  setTimeout(function(){
+    if(window._leafletMap){
+      window._leafletMap.flyTo([lat,lng],12,{duration:1.2});
+      window._leafletMap.eachLayer(function(l){
+        if(l.getLatLng&&Math.abs(l.getLatLng().lat-lat)<0.005&&Math.abs(l.getLatLng().lng-lng)<0.005) l.openPopup();
+      });
+    }
+  },200);
+}
+
+/* ══════ AUSFLÜGE ══════ */
+var cats=[{key:'alle',label:'Alle'},{key:'strand',label:'\u{1F3D6} Strand'},{key:'kultur',label:'\u{1F3DB} Kultur'},{key:'wanderung',label:'\u{1F97E} Wanderung'},{key:'natur',label:'\u{1F33F} Natur'},{key:'boot',label:'\u26F5 Bootstour'}];
+var activeCat='alle';
+var savedP=[];try{savedP=JSON.parse(localStorage.getItem('kreta-pois')||'[]')}catch(e){}
+
+function renderFilters(){
+  var bar=document.getElementById('filterBar');bar.innerHTML='';
+  cats.forEach(function(c){
+    var b=document.createElement('button');
+    b.className='filter-pill'+(activeCat===c.key?' active':'');
+    b.textContent=c.label;
+    b.onclick=function(){activeCat=c.key;renderFilters();renderPois()};
+    bar.appendChild(b);
+  });
+}
+
+function renderPois(){
+  var list=document.getElementById('poiList');list.innerHTML='';
+  var items=activeCat==='alle'?allPois:allPois.filter(function(p){return p.cat===activeCat});
+  items.forEach(function(poi){
+    var s=savedP.indexOf(poi.name)>-1;
+    var d=document.createElement('div');d.className='poi-item';
+    d.innerHTML='<button class="poi-save'+(s?' saved':'')+'" onclick="event.stopPropagation();togglePoi(\''+poi.name.replace(/'/g,"\\'")+'\')">'+( s?'\u2B50':'\u2606')+'</button>'
+      +'<h4>'+poi.icon+' '+poi.name+'</h4>'
+      +'<p>'+poi.desc+'</p>'
+      +'<div>'+poi.tags.map(function(t){var c='poi-tag tag-'+poi.cat;return '<span class="'+c+'">'+t+'</span>'}).join('')+'</div>';
+    d.onclick=function(){flyTo(poi.lat,poi.lng)};
+    list.appendChild(d);
+  });
+  var bar=document.getElementById('poiSavedBar');
+  if(savedP.length>0){bar.style.display='flex';document.getElementById('poiSavedCount').textContent=savedP.length}
+  else bar.style.display='none';
+}
+
+function togglePoi(name){
+  var i=savedP.indexOf(name);
+  if(i>-1)savedP.splice(i,1);else savedP.push(name);
+  try{localStorage.setItem('kreta-pois',JSON.stringify(savedP))}catch(e){}
+  renderPois();
+}
+
+renderFilters();renderPois();
+
+/* ══════ RESTAURANTS ══════ */
+var savedR=[];try{savedR=JSON.parse(localStorage.getItem('kreta-restos')||'[]')}catch(e){}
+
+function renderRestos(){
+  var list=document.getElementById('restoList');list.innerHTML='';
+  allRestos.forEach(function(r){
+    var s=savedR.indexOf(r.name)>-1;
+    var d=document.createElement('div');
+    d.className='resto-card'+(s?' saved':'');
+    d.innerHTML='<button class="resto-save'+(s?' saved':'')+'" onclick="toggleResto(\''+r.name.replace(/'/g,"\\'")+'\')">'+(s?'\u2764\uFE0F':'\u{1F90D}')+'</button>'
+      +'<div class="resto-type">'+r.type+'</div>'
+      +'<div class="resto-name">'+r.name+'</div>'
+      +'<div class="resto-rating">\u2B50 '+r.rating+'</div>'
+      +'<p class="resto-desc">'+r.desc+'</p>'
+      +'<div class="resto-meta"><span>\u{1F4CD} '+r.loc+'</span><span>\u{1F4B0} '+r.price+'</span><span><a href="'+r.maps+'" target="_blank" rel="noopener">Maps \u2192</a></span></div>';
+    list.appendChild(d);
+  });
+  var bar=document.getElementById('restoSavedBar');
+  if(savedR.length>0){bar.style.display='flex';document.getElementById('restoSavedCount').textContent=savedR.length}
+  else bar.style.display='none';
+}
+
+function toggleResto(name){
+  var i=savedR.indexOf(name);
+  if(i>-1)savedR.splice(i,1);else savedR.push(name);
+  try{localStorage.setItem('kreta-restos',JSON.stringify(savedR))}catch(e){}
+  renderRestos();
+}
+
+renderRestos();
+</script>
+</body>
+</html>

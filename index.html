@@ -86,7 +86,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
 .vote-label { text-align:center; margin-top:2rem; color:var(--text-light); font-size:0.85rem; font-style:italic; }
 
 #map-container { width:100%; height:450px; border-radius:var(--radius); box-shadow:var(--shadow); margin-bottom:2rem; overflow:hidden; position:relative; background:var(--blue-sky); }
-#map { width:100%; height:100%; }
+#map, #restoMap { width:100%; height:100%; }
 .map-fallback { display:flex; align-items:center; justify-content:center; height:100%; flex-direction:column; gap:1rem; color:var(--text-light); padding:2rem; text-align:center; }
 .map-fallback a { color:var(--blue-aegean); }
 
@@ -244,8 +244,10 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
 <!-- RESTAURANTS -->
 <section class="section" id="restaurants">
   <h2 class="section-title">Restaurant-Tipps</h2>
-  <p class="section-sub">Die besten Tavernen rund um Chania — merke dir Favoriten mit ❤️</p>
+  <p class="section-sub">Die besten Tavernen rund um Chania — filtere nach Preis oder zeige nur Favoriten.</p>
+  <div class="filter-bar" id="restoFilterBar"></div>
   <div class="saved-bar" id="restoSavedBar" style="display:none">❤️ <strong id="restoSavedCount">0</strong> Restaurants gemerkt</div>
+  <div id="resto-map-container" style="width:100%;height:380px;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:2rem;overflow:hidden;background:var(--blue-sky);"><div id="restoMap"></div></div>
   <div class="resto-cards" id="restoList"></div>
 </section>
 
@@ -309,14 +311,14 @@ var allPois = [
 ];
 
 var allRestos = [
-  {name:'Tamam',type:'Kretisch-Mediterran',loc:'Chania Altstadt',rating:4.6,price:'\u20AC\u20AC',desc:'Gehobene kretische Küche in einem umgebauten türkischen Hamam. Kreative Gerichte mit lokalen Zutaten. Reservierung empfohlen!',maps:'https://maps.google.com/?q=Tamam+restaurant+Chania+Crete'},
-  {name:'Thalassino Ageri',type:'Fisch & Meeresfrüchte',loc:'Chania Hafen',rating:4.5,price:'\u20AC\u20AC\u20AC',desc:'Direkt am Meer, Tische fast im Wasser. Fangfrischer Fisch und Seafood. Romantisches Abendessen garantiert.',maps:'https://maps.google.com/?q=Thalassino+Ageri+Chania'},
-  {name:'Glossitses',type:'Moderne kretische Küche',loc:'Chania Altstadt',rating:4.7,price:'\u20AC\u20AC',desc:'Kleine Karte, alles exzellent. Lokale Zutaten modern interpretiert. Unbedingt die Dakos und Lammgerichte probieren.',maps:'https://maps.google.com/?q=Glossitses+Chania'},
-  {name:'The Well of the Turk',type:'Kretisch-Orientalisch',loc:'Splantzia-Viertel',rating:4.4,price:'\u20AC\u20AC',desc:'Versteckt in einer Gasse, Fusion aus kretischer und orientalischer Küche. Tolle Innenhof-Atmosphäre.',maps:'https://maps.google.com/?q=Well+of+the+Turk+Chania'},
-  {name:'Apostolis',type:'Traditionelle Taverne',loc:'Alter Hafen',rating:4.3,price:'\u20AC',desc:'Bodenständige Taverne am Hafen. Frischer Fisch zu fairen Preisen. Gutes Preis-Leistungs-Verhältnis.',maps:'https://maps.google.com/?q=Apostolis+Taverna+Chania'},
-  {name:'Vigli',type:'Gehobene Küche',loc:'Akrotiri-Halbinsel',rating:4.6,price:'\u20AC\u20AC\u20AC',desc:'Spektakulärer Blick über die Souda-Bucht. Gehobene Küche in romantischer Atmosphäre. Besonderer Abend!',maps:'https://maps.google.com/?q=Vigli+restaurant+Akrotiri+Chania'},
-  {name:'Portes',type:'Kretische Mezedes',loc:'Chania Altstadt',rating:4.5,price:'\u20AC',desc:'Gemütlicher Innenhof. Viele kleine Mezedes-Teller zum Teilen. Kretische Spezialitäten, Raki inklusive!',maps:'https://maps.google.com/?q=Portes+restaurant+Chania'},
-  {name:'Elia & Diosmos',type:'Bio-Kretisch',loc:'Chania Süd',rating:4.5,price:'\u20AC\u20AC',desc:'Bio-Zutaten aus eigenem Anbau. Traditionelle Rezepte. Ruhig abseits der Touristen-Hotspots.',maps:'https://maps.google.com/?q=Elia+Diosmos+Chania'},
+  {name:'Tamam',type:'Kretisch-Mediterran',loc:'Chania Altstadt',lat:35.5175,lng:24.0185,rating:4.6,price:'\u20AC\u20AC',desc:'Gehobene kretische Küche in einem umgebauten türkischen Hamam. Kreative Gerichte mit lokalen Zutaten. Reservierung empfohlen!',maps:'https://maps.google.com/?q=Tamam+restaurant+Chania+Crete'},
+  {name:'Thalassino Ageri',type:'Fisch & Meeresfrüchte',loc:'Chania Hafen',lat:35.5178,lng:24.0230,rating:4.5,price:'\u20AC\u20AC\u20AC',desc:'Direkt am Meer, Tische fast im Wasser. Fangfrischer Fisch und Seafood. Romantisches Abendessen garantiert.',maps:'https://maps.google.com/?q=Thalassino+Ageri+Chania'},
+  {name:'Glossitses',type:'Moderne kretische Küche',loc:'Chania Altstadt',lat:35.5168,lng:24.0172,rating:4.7,price:'\u20AC\u20AC',desc:'Kleine Karte, alles exzellent. Lokale Zutaten modern interpretiert. Unbedingt die Dakos und Lammgerichte probieren.',maps:'https://maps.google.com/?q=Glossitses+Chania'},
+  {name:'The Well of the Turk',type:'Kretisch-Orientalisch',loc:'Splantzia-Viertel',lat:35.5188,lng:24.0195,rating:4.4,price:'\u20AC\u20AC',desc:'Versteckt in einer Gasse, Fusion aus kretischer und orientalischer Küche. Tolle Innenhof-Atmosphäre.',maps:'https://maps.google.com/?q=Well+of+the+Turk+Chania'},
+  {name:'Apostolis',type:'Traditionelle Taverne',loc:'Alter Hafen',lat:35.5192,lng:24.0175,rating:4.3,price:'\u20AC',desc:'Bodenständige Taverne am Hafen. Frischer Fisch zu fairen Preisen. Gutes Preis-Leistungs-Verhältnis.',maps:'https://maps.google.com/?q=Apostolis+Taverna+Chania'},
+  {name:'Vigli',type:'Gehobene Küche',loc:'Akrotiri-Halbinsel',lat:35.5420,lng:24.0950,rating:4.6,price:'\u20AC\u20AC\u20AC',desc:'Spektakulärer Blick über die Souda-Bucht. Gehobene Küche in romantischer Atmosphäre. Besonderer Abend!',maps:'https://maps.google.com/?q=Vigli+restaurant+Akrotiri+Chania'},
+  {name:'Portes',type:'Kretische Mezedes',loc:'Chania Altstadt',lat:35.5182,lng:24.0168,rating:4.5,price:'\u20AC',desc:'Gemütlicher Innenhof. Viele kleine Mezedes-Teller zum Teilen. Kretische Spezialitäten, Raki inklusive!',maps:'https://maps.google.com/?q=Portes+restaurant+Chania'},
+  {name:'Elia & Diosmos',type:'Bio-Kretisch',loc:'Chania Süd',lat:35.5080,lng:24.0200,rating:4.5,price:'\u20AC\u20AC',desc:'Bio-Zutaten aus eigenem Anbau. Traditionelle Rezepte. Ruhig abseits der Touristen-Hotspots.',maps:'https://maps.google.com/?q=Elia+Diosmos+Chania'},
 ];
 
 /* ══════ TABS ══════ */
@@ -327,6 +329,8 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
     btn.classList.add('active');
     document.getElementById(btn.dataset.tab).classList.add('active');
     if(btn.dataset.tab==='trips'&&!window._mapDone) loadMap();
+    if(btn.dataset.tab==='restaurants'&&!restoMapDone&&typeof L!=='undefined') initRestoMap();
+    if(btn.dataset.tab==='restaurants'&&!restoMapDone&&typeof L==='undefined') loadMapThen(initRestoMap);
   });
 });
 
@@ -357,20 +361,28 @@ function loadMap(){
   document.head.appendChild(link);
   var scr=document.createElement('script');
   scr.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-  scr.onload=function(){setTimeout(buildMap,300)};
+  scr.onload=function(){setTimeout(buildMap,300);window._leafletReady=true;if(window._leafletCb){window._leafletCb();window._leafletCb=null}};
   scr.onerror=function(){
     document.getElementById('map').innerHTML='<div class="map-fallback"><span style="font-size:2.5rem">\u{1F5FA}</span><p>Karte konnte nicht geladen werden.<br>Auf <strong>GitHub Pages</strong> funktioniert sie einwandfrei!</p></div>';
   };
   document.head.appendChild(scr);
+}
+function loadMapThen(cb){
+  if(typeof L!=='undefined'){cb();return;}
+  if(window._mapDone){window._leafletCb=cb;return;}
+  window._leafletCb=cb;loadMap();
 }
 
 function buildMap(){
   try{
     var map=L.map('map').setView([35.38,24.05],9);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'\u00A9 OpenStreetMap',maxZoom:17}).addTo(map);
+    window._poiMarkers=[];
     allPois.forEach(function(p){
       var ic=L.divIcon({html:'<div style="font-size:1.4rem;text-shadow:0 1px 3px rgba(0,0,0,0.3)">'+p.icon+'</div>',iconSize:[28,28],iconAnchor:[14,14],className:''});
-      L.marker([p.lat,p.lng],{icon:ic}).addTo(map).bindPopup('<strong>'+p.name+'</strong><br><span style="font-size:0.85em;color:#666">'+p.desc.substring(0,90)+'\u2026</span>'+(p.url?'<br><a href="'+p.url+'" target="_blank" style="font-size:0.8em;color:#2e86ab">Mehr \u2192</a>':''));
+      var m=L.marker([p.lat,p.lng],{icon:ic}).addTo(map).bindPopup('<strong>'+p.name+'</strong><br><span style="font-size:0.85em;color:#666">'+p.desc.substring(0,90)+'\u2026</span>'+(p.url?'<br><a href="'+p.url+'" target="_blank" style="font-size:0.8em;color:#2e86ab">Mehr \u2192</a>':''));
+      m._poiCat=p.cat;m._poiName=p.name;
+      window._poiMarkers.push(m);
     });
     hotels.forEach(function(h){
       var ic=L.divIcon({html:'<div style="font-size:1.1rem;background:#c75b39;color:white;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.35);border:2.5px solid white;">\u{1F3E8}</div>',iconSize:[36,36],iconAnchor:[18,18],className:''});
@@ -397,7 +409,7 @@ function flyTo(lat,lng){
 }
 
 /* ══════ AUSFLÜGE ══════ */
-var cats=[{key:'alle',label:'Alle'},{key:'strand',label:'\u{1F3D6} Strand'},{key:'kultur',label:'\u{1F3DB} Kultur'},{key:'wanderung',label:'\u{1F97E} Wanderung'},{key:'natur',label:'\u{1F33F} Natur'},{key:'boot',label:'\u26F5 Bootstour'}];
+var cats=[{key:'alle',label:'Alle'},{key:'favoriten',label:'\u2B50 Favoriten'},{key:'strand',label:'\u{1F3D6} Strand'},{key:'kultur',label:'\u{1F3DB} Kultur'},{key:'wanderung',label:'\u{1F97E} Wanderung'},{key:'natur',label:'\u{1F33F} Natur'},{key:'boot',label:'\u26F5 Bootstour'}];
 var activeCat='alle';
 var savedP=[];try{savedP=JSON.parse(localStorage.getItem('kreta-pois')||'[]')}catch(e){}
 
@@ -406,15 +418,24 @@ function renderFilters(){
   cats.forEach(function(c){
     var b=document.createElement('button');
     b.className='filter-pill'+(activeCat===c.key?' active':'');
+    if(c.key==='favoriten')b.style.cssText='border-color:var(--terracotta);'+(activeCat===c.key?'background:var(--terracotta);color:white;':'color:var(--terracotta);');
     b.textContent=c.label;
-    b.onclick=function(){activeCat=c.key;renderFilters();renderPois()};
+    b.onclick=function(){activeCat=c.key;renderFilters();renderPois();updatePoiMapMarkers()};
     bar.appendChild(b);
   });
 }
 
 function renderPois(){
   var list=document.getElementById('poiList');list.innerHTML='';
-  var items=activeCat==='alle'?allPois:allPois.filter(function(p){return p.cat===activeCat});
+  var items;
+  if(activeCat==='alle') items=allPois.slice();
+  else if(activeCat==='favoriten') items=allPois.filter(function(p){return savedP.indexOf(p.name)>-1});
+  else items=allPois.filter(function(p){return p.cat===activeCat});
+  items.sort(function(a,b){
+    var aS=savedP.indexOf(a.name)>-1?0:1;
+    var bS=savedP.indexOf(b.name)>-1?0:1;
+    return aS-bS;
+  });
   items.forEach(function(poi){
     var s=savedP.indexOf(poi.name)>-1;
     var d=document.createElement('div');d.className='poi-item';
@@ -435,17 +456,53 @@ function togglePoi(name){
   var i=savedP.indexOf(name);
   if(i>-1)savedP.splice(i,1);else savedP.push(name);
   try{localStorage.setItem('kreta-pois',JSON.stringify(savedP))}catch(e){}
-  renderPois();
+  renderPois();updatePoiMapMarkers();
+}
+
+function updatePoiMapMarkers(){
+  if(!window._leafletMap)return;
+  var map=window._leafletMap;
+  if(!window._poiMarkers)return;
+  window._poiMarkers.forEach(function(m){
+    if(activeCat==='alle'||activeCat===m._poiCat||(activeCat==='favoriten'&&savedP.indexOf(m._poiName)>-1)){
+      if(!map.hasLayer(m))map.addLayer(m);
+    }else{
+      if(map.hasLayer(m))map.removeLayer(m);
+    }
+  });
 }
 
 renderFilters();renderPois();
 
 /* ══════ RESTAURANTS ══════ */
 var savedR=[];try{savedR=JSON.parse(localStorage.getItem('kreta-restos')||'[]')}catch(e){}
+var restoFilter='alle';
+var restoCats=[{key:'alle',label:'Alle'},{key:'fav',label:'\u2764 Favoriten'},{key:'\u20AC',label:'\u20AC'},{key:'\u20AC\u20AC',label:'\u20AC\u20AC'},{key:'\u20AC\u20AC\u20AC',label:'\u20AC\u20AC\u20AC'}];
+
+function renderRestoFilters(){
+  var bar=document.getElementById('restoFilterBar');bar.innerHTML='';
+  restoCats.forEach(function(c){
+    var b=document.createElement('button');
+    b.className='filter-pill'+(restoFilter===c.key?' active':'');
+    if(c.key==='fav')b.style.cssText='border-color:var(--terracotta);'+(restoFilter==='fav'?'background:var(--terracotta);color:white;':'color:var(--terracotta);');
+    b.textContent=c.label;
+    b.onclick=function(){restoFilter=c.key;renderRestoFilters();renderRestos();updateRestoMapMarkers()};
+    bar.appendChild(b);
+  });
+}
 
 function renderRestos(){
   var list=document.getElementById('restoList');list.innerHTML='';
-  allRestos.forEach(function(r){
+  var items;
+  if(restoFilter==='alle') items=allRestos.slice();
+  else if(restoFilter==='fav') items=allRestos.filter(function(r){return savedR.indexOf(r.name)>-1});
+  else items=allRestos.filter(function(r){return r.price===restoFilter});
+  items.sort(function(a,b){
+    var aS=savedR.indexOf(a.name)>-1?0:1;
+    var bS=savedR.indexOf(b.name)>-1?0:1;
+    return aS-bS;
+  });
+  items.forEach(function(r){
     var s=savedR.indexOf(r.name)>-1;
     var d=document.createElement('div');
     d.className='resto-card'+(s?' saved':'');
@@ -466,10 +523,41 @@ function toggleResto(name){
   var i=savedR.indexOf(name);
   if(i>-1)savedR.splice(i,1);else savedR.push(name);
   try{localStorage.setItem('kreta-restos',JSON.stringify(savedR))}catch(e){}
-  renderRestos();
+  renderRestos();updateRestoMapMarkers();
 }
 
-renderRestos();
+var restoMapDone=false;
+function initRestoMap(){
+  if(restoMapDone)return;restoMapDone=true;
+  try{
+    var map=L.map('restoMap').setView([35.518,24.020],14);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'\u00A9 OpenStreetMap',maxZoom:18}).addTo(map);
+    window._restoMarkers=[];
+    allRestos.forEach(function(r){
+      var col=r.price==='\u20AC'?'#3a8a5c':r.price==='\u20AC\u20AC'?'#2e86ab':'#c75b39';
+      var ic=L.divIcon({html:'<div style="font-size:0.7rem;background:'+col+';color:white;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.3);border:2px solid white;font-weight:700;">'+r.price+'</div>',iconSize:[30,30],iconAnchor:[15,15],className:''});
+      var m=L.marker([r.lat,r.lng],{icon:ic}).addTo(map).bindPopup('<strong>'+r.name+'</strong><br><span style="font-size:0.85em;color:#666">'+r.type+' \u00B7 '+r.price+' \u00B7 \u2B50'+r.rating+'</span><br><a href="'+r.maps+'" target="_blank" style="font-size:0.8em;color:#2e86ab">Maps \u2192</a>');
+      m._restoPrice=r.price;m._restoName=r.name;
+      window._restoMarkers.push(m);
+    });
+    window._restoMap=map;
+    setTimeout(function(){map.invalidateSize()},200);
+  }catch(e){
+    document.getElementById('restoMap').innerHTML='<div class="map-fallback"><span style="font-size:2rem">\u{1F5FA}</span><p>Karte l\u00E4dt auf GitHub Pages.</p></div>';
+  }
+}
+
+function updateRestoMapMarkers(){
+  if(!window._restoMap||!window._restoMarkers)return;
+  var map=window._restoMap;
+  window._restoMarkers.forEach(function(m){
+    var show=restoFilter==='alle'||m._restoPrice===restoFilter||(restoFilter==='fav'&&savedR.indexOf(m._restoName)>-1);
+    if(show&&!map.hasLayer(m))map.addLayer(m);
+    if(!show&&map.hasLayer(m))map.removeLayer(m);
+  });
+}
+
+renderRestoFilters();renderRestos();
 </script>
 </body>
 </html>

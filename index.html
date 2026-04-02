@@ -78,6 +78,8 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
 .hotel-features li::before { content:'✓'; color:var(--blue-aegean); font-weight:700; }
 .hotel-price { font-size:0.85rem; color:var(--text-light); padding-top:1rem; border-top:1px solid rgba(0,0,0,0.06); }
 .hotel-price strong { font-size:1.2rem; color:var(--terracotta); }
+.hotel-link { display:inline-block; margin-top:0.75rem; color:var(--blue-aegean); text-decoration:none; font-size:0.88rem; font-weight:500; transition:color 0.2s; }
+.hotel-link:hover { color:var(--terracotta); text-decoration:underline; }
 .vote-btn { position:absolute; top:1rem; right:1rem; background:rgba(255,255,255,0.92); border:none; width:48px; height:48px; border-radius:50%; font-size:1.4rem; cursor:pointer; box-shadow:0 2px 10px rgba(0,0,0,0.15); transition:all 0.3s; display:flex; align-items:center; justify-content:center; }
 .vote-btn:hover { transform:scale(1.15); }
 .vote-btn.voted { background:var(--terracotta); }
@@ -210,6 +212,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
         <p class="hotel-location">📍 Agia Marina, ~10 km westlich von Chania</p>
         <ul class="hotel-features"><li>Kleines Hotel, nur 51 Zimmer</li><li>Direkt am feinsandigen Strand</li><li>Halbpension verfügbar (Buffet)</li><li>Pool, Whirlpool, Massagen</li><li>Bars & Restaurants fußläufig</li><li>Chania-Altstadt per Bus/Auto</li></ul>
         <div class="hotel-price">Geschätzt ab <strong>ca. 80–120 €/Nacht</strong> für 2 Pers. mit HP</div>
+        <a href="https://www.giannoulishotels.com/hotels-villas/giannoulis-santa-marina-plaza/" target="_blank" rel="noopener" class="hotel-link">🌐 Website besuchen →</a>
       </div>
     </div>
     <div class="hotel-card" id="hotel2">
@@ -221,6 +224,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
         <p class="hotel-location">📍 Chania-Stadt, zwischen Altstadt & Strand</p>
         <ul class="hotel-features"><li>Hilton Tapestry Collection</li><li>Dachterrasse mit Pool & Meerblick</li><li>Halbpension wählbar (à la carte)</li><li>Strände & Altstadt zu Fuß</li><li>Spa, Fitness mit Meerblick</li><li>Valet Parking & WLAN gratis</li></ul>
         <div class="hotel-price">Geschätzt ab <strong>ca. 250–350 €/Nacht</strong> für 2 Pers. mit HP</div>
+        <a href="https://corissia.com/hotels/de/flair" target="_blank" rel="noopener" class="hotel-link">🌐 Website besuchen →</a>
       </div>
     </div>
   </div>
@@ -278,25 +282,30 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
 
 <script>
 /* ══════ DATA ══════ */
+var hotels = [
+  {name:'Santa Marina Plaza',lat:35.5128,lng:23.9192,icon:'\u{1F3E8}',desc:'Adults Only 4★ · Agia Marina, direkt am Strand',url:'https://www.giannoulishotels.com/hotels-villas/giannoulis-santa-marina-plaza/'},
+  {name:'Chania Flair Boutique',lat:35.5145,lng:24.0095,icon:'\u{1F3E8}',desc:'Adults Only 5★ · Chania-Stadt, Altstadt & Strand zu Fuß',url:'https://corissia.com/hotels/de/flair'},
+];
+
 var allPois = [
-  {name:'Balos-Lagune',lat:35.5931,lng:23.5880,icon:'\u{1F3D6}',cat:'strand',desc:'Türkisfarbene Lagune mit karibischem Flair. Per Auto + 20 min Wanderung oder Boot ab Kissamos.',tags:['~1,5h','Strand']},
-  {name:'Elafonissi Beach',lat:35.2725,lng:23.5425,icon:'\u{1F41A}',cat:'strand',desc:'Berühmt für rosafarbenen Sand und kristallklares Wasser. Einer der schönsten Strände Europas.',tags:['~1,5h','Strand']},
-  {name:'Falassarna',lat:35.4949,lng:23.5700,icon:'\u{1F305}',cat:'strand',desc:'Breiter Sandstrand mit spektakulären Sonnenuntergängen. Ruhiger als Balos und Elafonissi.',tags:['~1h','Strand']},
-  {name:'Seitan Limania',lat:35.5640,lng:24.1350,icon:'\u{1F3CA}',cat:'strand',desc:'Versteckte Bucht mit türkisem Wasser zwischen Felsklippen. Kurzer steiler Abstieg, aber Wow-Faktor!',tags:['~30min','Strand']},
-  {name:'Preveli Beach',lat:35.2350,lng:24.4750,icon:'\u{1F334}',cat:'strand',desc:'Palmenstrand an der Südküste mit Fluss-Mündung. Fast tropische Atmosphäre.',tags:['~2h','Strand']},
-  {name:'Stavros Beach',lat:35.5920,lng:24.0580,icon:'\u{1F3AC}',cat:'strand',desc:'Bekannt aus "Alexis Sorbas". Geschützte Bucht am Fuß eines markanten Berges.',tags:['~20min','Strand']},
-  {name:'Marathi Beach',lat:35.5540,lng:24.1280,icon:'\u{2602}',cat:'strand',desc:'Kleiner ruhiger Strand auf der Akrotiri-Halbinsel. Wenig Touristen, gute Tavernen direkt am Wasser.',tags:['~20min','Strand']},
-  {name:'Samaria-Schlucht',lat:35.2517,lng:23.9625,icon:'\u{1F97E}',cat:'wanderung',desc:'16 km durch eine der längsten Schluchten Europas. Ganztagesabenteuer! Rücktransfer per Boot + Bus.',tags:['Ganztag','Wanderung']},
-  {name:'Imbros-Schlucht',lat:35.2660,lng:24.1620,icon:'\u{1F97E}',cat:'wanderung',desc:'Kürzere Alternative zu Samaria (8 km). Weniger anstrengend, trotzdem beeindruckend.',tags:['~1h + Halbtag','Wanderung']},
-  {name:'Rethymno',lat:35.3387,lng:24.4699,icon:'\u{1F3F0}',cat:'kultur',desc:'Charmante Altstadt mit Festung Fortezza, venezianischem Hafen und langen Sandstränden.',tags:['~1h','Kultur & Strand']},
-  {name:'Knossos',lat:35.2984,lng:25.1631,icon:'\u{1F3DB}',cat:'kultur',desc:'Legendärer minoischer Palast bei Heraklion. Mythos des Minotaurus! Mit Archäologischem Museum.',tags:['~2h','Kultur']},
-  {name:'Chania Altstadt',lat:35.5183,lng:24.0178,icon:'\u{1F3DB}',cat:'kultur',desc:'Venezianischer Hafen, Leuchtturm, Markthalle, osmanische Architektur. Abends besonders stimmungsvoll.',tags:['Zu Fuß','Kultur']},
-  {name:'Kloster Agia Triada',lat:35.5590,lng:24.1320,icon:'\u26EA',cat:'kultur',desc:'Beeindruckendes Kloster auf der Akrotiri-Halbinsel. Schöne Architektur, eigene Olivenöl-Produktion.',tags:['~25min','Kultur']},
-  {name:'Archäol. Museum Heraklion',lat:35.3396,lng:25.1375,icon:'\u{1F3FA}',cat:'kultur',desc:'Eines der wichtigsten Museen Europas für minoische Kunst. Perfekt mit Knossos kombinierbar.',tags:['~2h','Kultur']},
-  {name:'Kournas-See',lat:35.3317,lng:24.2822,icon:'\u{1F986}',cat:'natur',desc:'Einziger Süßwassersee Kretas. Tretboot, Schwimmen, Tavernen am Ufer. Idyllisch!',tags:['~40min','Natur']},
-  {name:'Botanischer Garten',lat:35.4320,lng:23.9350,icon:'\u{1F33F}',cat:'natur',desc:'Botanical Park of Crete in den Weißen Bergen. Heimische Pflanzen, Obstgärten, eigenes Restaurant.',tags:['~30min','Natur']},
-  {name:'Gramvousa Bootstour',lat:35.6150,lng:23.5780,icon:'\u{1F6A2}',cat:'boot',desc:'Boot ab Kissamos zur Festungsinsel Gramvousa + Balos-Lagune. Beliebter Ganztagesausflug.',tags:['Ganztag','Bootstour']},
-  {name:'Loutro',lat:35.2010,lng:24.0780,icon:'\u26F5',cat:'boot',desc:'Autofreies Dorf nur per Boot erreichbar. Kristallklares Wasser, absolute Ruhe. Tagestrip.',tags:['Boot + Wandern','Bootstour']},
+  {name:'Balos-Lagune',lat:35.5931,lng:23.5880,icon:'\u{1F3D6}',cat:'strand',desc:'Türkisfarbene Lagune mit karibischem Flair. Per Auto + 20 min Wanderung oder Boot ab Kissamos.',tags:['~1,5h','Strand'],url:'https://maps.google.com/?q=Balos+Lagoon+Crete'},
+  {name:'Elafonissi Beach',lat:35.2725,lng:23.5425,icon:'\u{1F41A}',cat:'strand',desc:'Berühmt für rosafarbenen Sand und kristallklares Wasser. Einer der schönsten Strände Europas.',tags:['~1,5h','Strand'],url:'https://maps.google.com/?q=Elafonissi+Beach+Crete'},
+  {name:'Falassarna',lat:35.4949,lng:23.5700,icon:'\u{1F305}',cat:'strand',desc:'Breiter Sandstrand mit spektakulären Sonnenuntergängen. Ruhiger als Balos und Elafonissi.',tags:['~1h','Strand'],url:'https://maps.google.com/?q=Falassarna+Beach+Crete'},
+  {name:'Seitan Limania',lat:35.5640,lng:24.1350,icon:'\u{1F3CA}',cat:'strand',desc:'Versteckte Bucht mit türkisem Wasser zwischen Felsklippen. Kurzer steiler Abstieg, aber Wow-Faktor!',tags:['~30min','Strand'],url:'https://maps.google.com/?q=Seitan+Limania+Crete'},
+  {name:'Preveli Beach',lat:35.2350,lng:24.4750,icon:'\u{1F334}',cat:'strand',desc:'Palmenstrand an der Südküste mit Fluss-Mündung. Fast tropische Atmosphäre.',tags:['~2h','Strand'],url:'https://maps.google.com/?q=Preveli+Beach+Crete'},
+  {name:'Stavros Beach',lat:35.5920,lng:24.0580,icon:'\u{1F3AC}',cat:'strand',desc:'Bekannt aus "Alexis Sorbas". Geschützte Bucht am Fuß eines markanten Berges.',tags:['~20min','Strand'],url:'https://maps.google.com/?q=Stavros+Beach+Chania+Crete'},
+  {name:'Marathi Beach',lat:35.5540,lng:24.1280,icon:'\u{2602}',cat:'strand',desc:'Kleiner ruhiger Strand auf der Akrotiri-Halbinsel. Wenig Touristen, gute Tavernen direkt am Wasser.',tags:['~20min','Strand'],url:'https://maps.google.com/?q=Marathi+Beach+Chania'},
+  {name:'Samaria-Schlucht',lat:35.2517,lng:23.9625,icon:'\u{1F97E}',cat:'wanderung',desc:'16 km durch eine der längsten Schluchten Europas. Ganztagesabenteuer! Rücktransfer per Boot + Bus.',tags:['Ganztag','Wanderung'],url:'https://www.samaria.gr/'},
+  {name:'Imbros-Schlucht',lat:35.2660,lng:24.1620,icon:'\u{1F97E}',cat:'wanderung',desc:'Kürzere Alternative zu Samaria (8 km). Weniger anstrengend, trotzdem beeindruckend.',tags:['~1h + Halbtag','Wanderung'],url:'https://maps.google.com/?q=Imbros+Gorge+Crete'},
+  {name:'Rethymno',lat:35.3387,lng:24.4699,icon:'\u{1F3F0}',cat:'kultur',desc:'Charmante Altstadt mit Festung Fortezza, venezianischem Hafen und langen Sandstränden.',tags:['~1h','Kultur & Strand'],url:'https://maps.google.com/?q=Rethymno+Old+Town+Crete'},
+  {name:'Knossos',lat:35.2984,lng:25.1631,icon:'\u{1F3DB}',cat:'kultur',desc:'Legendärer minoischer Palast bei Heraklion. Mythos des Minotaurus! Mit Archäologischem Museum.',tags:['~2h','Kultur'],url:'https://maps.google.com/?q=Palace+of+Knossos+Crete'},
+  {name:'Chania Altstadt',lat:35.5183,lng:24.0178,icon:'\u{1F3DB}',cat:'kultur',desc:'Venezianischer Hafen, Leuchtturm, Markthalle, osmanische Architektur. Abends besonders stimmungsvoll.',tags:['Zu Fuß','Kultur'],url:'https://maps.google.com/?q=Old+Venetian+Harbor+Chania'},
+  {name:'Kloster Agia Triada',lat:35.5590,lng:24.1320,icon:'\u26EA',cat:'kultur',desc:'Beeindruckendes Kloster auf der Akrotiri-Halbinsel. Schöne Architektur, eigene Olivenöl-Produktion.',tags:['~25min','Kultur'],url:'https://maps.google.com/?q=Agia+Triada+Monastery+Akrotiri'},
+  {name:'Archäol. Museum Heraklion',lat:35.3396,lng:25.1375,icon:'\u{1F3FA}',cat:'kultur',desc:'Eines der wichtigsten Museen Europas für minoische Kunst. Perfekt mit Knossos kombinierbar.',tags:['~2h','Kultur'],url:'https://maps.google.com/?q=Heraklion+Archaeological+Museum'},
+  {name:'Kournas-See',lat:35.3317,lng:24.2822,icon:'\u{1F986}',cat:'natur',desc:'Einziger Süßwassersee Kretas. Tretboot, Schwimmen, Tavernen am Ufer. Idyllisch!',tags:['~40min','Natur'],url:'https://maps.google.com/?q=Lake+Kournas+Crete'},
+  {name:'Botanischer Garten',lat:35.4320,lng:23.9350,icon:'\u{1F33F}',cat:'natur',desc:'Botanical Park of Crete in den Weißen Bergen. Heimische Pflanzen, Obstgärten, eigenes Restaurant.',tags:['~30min','Natur'],url:'https://www.botanical-park.com/'},
+  {name:'Gramvousa Bootstour',lat:35.6150,lng:23.5780,icon:'\u{1F6A2}',cat:'boot',desc:'Boot ab Kissamos zur Festungsinsel Gramvousa + Balos-Lagune. Beliebter Ganztagesausflug.',tags:['Ganztag','Bootstour'],url:'https://maps.google.com/?q=Gramvousa+Island+Crete'},
+  {name:'Loutro',lat:35.2010,lng:24.0780,icon:'\u26F5',cat:'boot',desc:'Autofreies Dorf nur per Boot erreichbar. Kristallklares Wasser, absolute Ruhe. Tagestrip.',tags:['Boot + Wandern','Bootstour'],url:'https://maps.google.com/?q=Loutro+Crete'},
 ];
 
 var allRestos = [
@@ -361,7 +370,11 @@ function buildMap(){
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'\u00A9 OpenStreetMap',maxZoom:17}).addTo(map);
     allPois.forEach(function(p){
       var ic=L.divIcon({html:'<div style="font-size:1.4rem;text-shadow:0 1px 3px rgba(0,0,0,0.3)">'+p.icon+'</div>',iconSize:[28,28],iconAnchor:[14,14],className:''});
-      L.marker([p.lat,p.lng],{icon:ic}).addTo(map).bindPopup('<strong>'+p.name+'</strong><br><span style="font-size:0.85em;color:#666">'+p.desc.substring(0,90)+'\u2026</span>');
+      L.marker([p.lat,p.lng],{icon:ic}).addTo(map).bindPopup('<strong>'+p.name+'</strong><br><span style="font-size:0.85em;color:#666">'+p.desc.substring(0,90)+'\u2026</span>'+(p.url?'<br><a href="'+p.url+'" target="_blank" style="font-size:0.8em;color:#2e86ab">Mehr \u2192</a>':''));
+    });
+    hotels.forEach(function(h){
+      var ic=L.divIcon({html:'<div style="font-size:1.1rem;background:#c75b39;color:white;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.35);border:2.5px solid white;">\u{1F3E8}</div>',iconSize:[36,36],iconAnchor:[18,18],className:''});
+      L.marker([h.lat,h.lng],{icon:ic,zIndexOffset:1000}).addTo(map).bindPopup('<strong style="color:#c75b39">\u{1F3E8} '+h.name+'</strong><br><span style="font-size:0.85em;color:#666">'+h.desc+'</span><br><a href="'+h.url+'" target="_blank" style="font-size:0.8em;color:#2e86ab">Website \u2192</a>');
     });
     window._leafletMap=map;
     setTimeout(function(){map.invalidateSize()},200);
@@ -408,7 +421,8 @@ function renderPois(){
     d.innerHTML='<button class="poi-save'+(s?' saved':'')+'" onclick="event.stopPropagation();togglePoi(\''+poi.name.replace(/'/g,"\\'")+'\')">'+( s?'\u2B50':'\u2606')+'</button>'
       +'<h4>'+poi.icon+' '+poi.name+'</h4>'
       +'<p>'+poi.desc+'</p>'
-      +'<div>'+poi.tags.map(function(t){var c='poi-tag tag-'+poi.cat;return '<span class="'+c+'">'+t+'</span>'}).join('')+'</div>';
+      +'<div>'+poi.tags.map(function(t){var c='poi-tag tag-'+poi.cat;return '<span class="'+c+'">'+t+'</span>'}).join('')
+      +(poi.url?' <a href="'+poi.url+'" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="font-size:0.75rem;color:#2e86ab;text-decoration:none;margin-left:0.5rem;">Maps \u2192</a>':'')+'</div>';
     d.onclick=function(){flyTo(poi.lat,poi.lng)};
     list.appendChild(d);
   });
